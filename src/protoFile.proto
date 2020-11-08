@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+service cali{
+
+    rpc addRecord(addRequest) returns (addResponse);
+    rpc updateRecord(updateRequest) returns (updateResponse);
+    rpc readRecord(readRequest) returns (readResponse);
+}
+
+ 
+
+message addRequest{
+    
+    map<string, string> songRecord = 1;  
+}
+
+message updateRequest{
+
+    map<string, string> songRecord = 1;
+    
+}
+
+message readRequest{
+
+    map<string, string> songRecord = 1;
+    
+}
+
+message addResponse{
+
+    map<string, string> songRecord = 1;
+    
+}
+
+message updateResponse{
+
+    map<string, string> songRecord = 1;
+    
+}
+
+message readResponse{
+
+    map<string, string> songRecord = 1;
+    
+}
