@@ -1,0 +1,29 @@
+syntax =  "proto3";
+package grpc_service;
+import "google/protobuf/wrappers.proto";
+
+service caliSystemService{
+    
+    rpc addRecord(RecordInfo) returns (google.protobuf.StringValue);
+    rpc updateRecord(RecordInfo) returns (google.protobuf.StringValue);
+    rpc viewRecord(google.protobuf.StringValue) returns (google.protobuf.StringValue);
+    
+
+}
+
+message RecordInfo {
+    string RecID = 1;
+    string artistName = 2;
+    string artistMembership = 3;
+    string songTitle = 5;
+    string songGenre = 6;
+    string songPlatform = 7;
+
+    string band = 8;
+
+    string date = 9;
+
+
+
+
+}
