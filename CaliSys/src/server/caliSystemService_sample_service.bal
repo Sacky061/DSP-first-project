@@ -28,10 +28,39 @@ service caliSystemService on ep {
 
         // You should return a string
     }
-    resource function viewRecord(grpc:Caller caller, string value) {
-        // Implementation goes here.
+    resource function viewRecord(grpc:Caller caller, RecordInfo value) {
+        map<RecordInfo> recordmap = {};
 
-        // You should return a string
+         string ID = value.RecID;
+        recordmap[value.RecID] = value;
+        
+         string payload = "";
+         error? result = ();
+// Find the requested record from the map.
+        if (recordmap.hasKey(ID)) {
+        var jsonValue = json.constructFrom(recordmap[ID]);
+    if (jsonValue is error) {
+        
+ // Send casting error as internal error.
+        result = caller->sendError(grpc:INTERNAL,
+        <string>jsonValue.detail().message);
+    } else {
+        json recordDetails = jsonValue;
+        payload = recordDetails.toString();
+// Send response to the caller.
+        result = caller->send(payload);
+        result = caller->complete();
+}
+        } else {
+// Send entity not found error.
+        payload = "Record : '" + ID + "' cannot be found.";
+        result = caller->sendError(grpc:NOT_FOUND, payload);
+}
+
+        if (result is error) {
+        log:printError("Error from Connector: " + result.reason().
+        toString());
+}
     }
 }
 
