@@ -1,24 +1,110 @@
 import ballerina/grpc;
+import ballerina/crypto;
+import ballerina/io;
+import ballerina/math;
 
 listener grpc:Listener ep = new (9090);
-
+map<addRequest> caliMap = {};
 service cali on ep {
 
     resource function addRecord(grpc:Caller caller, addRequest value) {
-        // Implementation goes here.
+     // add the new record to the map
+        string recordVersionNo = recordReq.VersionNo;
+        caliMap[recordReq.recordVersionNo] = <@untained>recordReq;
+        string payload = " Status : Record created; VersionNo :" + recordVersionNo;
 
-        // You should return a addResponse
+        // send response to the caller
+        error? result = caller->send(payload);
+        result = caller->complete();
+        if (result is error) {
+            log:printError("Error from Connector: " + result.reason() + "-" + <tring>result.detail()["message"] + "\n");
+        }
+
+        // SHA1 hashing algorithm
+        byte[] verionNoArr = recordVersionNo.toBytes();
+        result = crypto:hashSha1(verionNoArr);
+        io:println("Base64 encoded hash with SHA1: " + result.toBase64());
+        
+        // reference to RSA private key
+    crypto:KeyStore keyStore = {path: "./sampleKeystore.p12", password: "ballerina"};
+    var privateKey = crypto:decodePrivateKey(keyStore, "ballerina", "ballerina");
+
+    if (privateKey is crypto:PrivateKey) {
+        // signing input value and printing signature value
+        result = check crypto:signRsaSha1(verionNoArr, privateKey);
+        io:println("Base64 encoded RSA-SHA1 signature: " + result.toBase64());
+        } else {
+        io:println("Invalid private key");
+    }
+    // generate a 128 bit key
+    byte[16] rsaKeyArr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+     foreach var i in 0 ... 15 {
+        rsaKeyArr[i] = <byte>(math:randomInRange(0, 255));
+     }
+     result = check crypto:encryptAesCbc(verionNoArr, rsaKeyArr, ivArr);
+     result = check crypto:decryptAesCbc(result, rsaKeyArr, ivArr);
+     io:println("AES CBC PKCS5 decrypted value: " + check 'string:fromBytes(result));
+     // public key  used for RSA encryption
+     crypto:PublicKey rsaPublicKey = check crypto:decodePublicKey(keyStore, "ballerina");
+     // private key used for RSA decryption
+     crypto:PrivateKey rsaPrivateKey = check crypto:decodePrivateKey(keyStore, "ballerina","ballerina");
+
+        caliMap[string.convert(recordVersionNo)] = value;
+        json j1 = checkpanic json.convert(caliMap[string.convert(recordVersionNo)]);
+        string newValue = "Record value "+j1.toString();
+    
     }
     resource function updateRecord(grpc:Caller caller, updateRequest value) {
-        // Implementation goes here.
+    string payload;
+        error? result = ();
+        // Find the order that needs to be updated.
+        string recordVersionNo = updateRecord.versionNo;
+        if (caliMap.hasKey(recordVersionNo)) {
+            // Update the existing order.
+            caliMap[recordVersionNo] = <@untained>updateRecord;
+            payload = "Record : '" + recordVersionNo + "' updated.";
+            // Send response to the caller.
+            result = caller->send(payload);
+            result = caller->complete();
+        } else {
+            // Send entity not found error.
+            payload = "Record : '" + recordVersionNo + "' Record does not exist";
+            result = caller->sendError(grpc:NOT_FOUND, payload);
+        }
 
-        // You should return a updateResponse
+        if (result is error) {
+            log:printError("Error from Connector: " + result.reason() + " - "
+                    + <string>result.detail()["message"] + "\n");
+        }
+        
     }
     resource function readRecord(grpc:Caller caller, readRequest value) {
-        // Implementation goes here.
+    string payload = "";
+        error? result = ();
+        // read the requested record from the map.
+        if (caliMap.hasKey(recordVersionNo)) {
+            var jsonValue = typedesc<json>.constructFrom(caliMap[recordVersionNo]);
+            if (jsonValue is error) {
+                // Send casting error as internal error.
+                result = caller->sendError(grpc:INTERNAL, <string>jsonValue.detail()["message"]);
+            } else {
+                json recordDetails = jsonValue;
+                payload = recordDetails.toString();
+                // Send response to the caller.
+                result = caller->send(payload);
+                result = caller->complete();
+            }
+        } else {
+            // Send entity not found error.
+            payload = "Record : '" + recordVersionNo + "' Record does not exist";
+            result = caller->sendError(grpc:NOT_FOUND, payload);
+        }
 
-        // You should return a readResponse
-    }
+        if (result is error) {
+            log:printError("Error from Connector: " + result.reason() + " - "
+                    + <string>result.detail()["message"] + "\n");
+        }
+        
 }
 
 public type addRequest record {|
