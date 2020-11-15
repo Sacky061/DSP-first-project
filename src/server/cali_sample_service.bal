@@ -57,10 +57,10 @@ service cali on ep {
     resource function updateRecord(grpc:Caller caller, updateRequest value) {
     string payload;
         error? result = ();
-        // Find the order that needs to be updated.
+        // Find the record that needs to be updated.
         string recordVersionNo = updateRecord.versionNo;
         if (caliMap.hasKey(recordVersionNo)) {
-            // Update the existing order.
+            // Update the existing record.
             caliMap[recordVersionNo] = <@untained>updateRecord;
             payload = "Record : '" + recordVersionNo + "' updated.";
             // Send response to the caller.
