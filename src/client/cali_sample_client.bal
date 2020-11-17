@@ -9,17 +9,43 @@ function displayOptions(){
     io:println("2. Update a record");
     io:println("3. Read a record");
     io:println("4. Exit");
+    string choice = io:readln("Enter Choice: ");
+
+    if (choice == "1"){
+        addRecord();
+    }
+    else if (choice == "2"){
+        updateRecord();
+
+    }
+    else if (choice == "3"){
+        readRecord();
+    }
+    else if(choice == "4"){
+        exit();
+    }
+    else {
+        io:println("Error: Incorrect input");
+        displayOptions();
+    }
     }
 
+
 function addRecord(){
+
     io:println("                 ADDING A NEW RECORD.....");
     
     map<json> newRecord= {
+        songVersion: "",
         date: "",
         artists: [],
         band: "",
         songs: []
     };
+
+    string inputVersion = io:readln("Enter Version Number: ");
+    newRecord["songVersion"] = inputVersion;
+
     string inputDate = io:readln("Add date in the format: DD/MM/YYYY: ");
     newRecord["date"] = inputDate;
     
@@ -28,7 +54,7 @@ function addRecord(){
 
     json[] inputArtist = <json[]>newRecord["artists"];
     foreach int i in 0..<totalArtists{
-        string inputName = io:readln("Artist Name: ");
+        string inputName = io:readln("Enter Artist Name: ");
         string inputMember = io:readln("Member(Enter yes or no): ");
         //Write to the map        
         inputArtist[i] = {name: inputName, member: inputMember};
@@ -47,7 +73,182 @@ function addRecord(){
     newRecord["songs"] = inputSongs;
 
     io:println("The newly added record is: ", newRecord.toJsonString());
+    displayOptions();
         
+}
+
+function updateRecord() {
+
+    io:println("                 UPDATING A RECORD.....");
+    
+    map<json> newRecord= {
+        songKey: "",
+        songVersion: "",
+        date: "",
+        artists: [],
+        band: "",
+        songs: []
+    };
+
+    string inputKey = io:readln("Enter Song Key Number: ");
+    newRecord["songKey"] = inputKey;
+
+    string inputVersion = io:readln("Enter Version Number: ");
+    newRecord["songVersion"] = inputVersion;
+
+    string inputDate = io:readln("Add date in the format: DD/MM/YYYY: ");
+    newRecord["date"] = inputDate;
+    
+    int|error totalArtistsEr = 'int:fromString(io:readln("Enter total number of contributing artists: "));
+    int totalArtists = <int> totalArtistsEr;
+
+    json[] inputArtist = <json[]>newRecord["artists"];
+    foreach int i in 0..<totalArtists{
+        string inputName = io:readln("Enter Artist Name: ");
+        string inputMember = io:readln("Member(Enter yes or no): ");
+        //Write to the map        
+        inputArtist[i] = {name: inputName, member: inputMember};
+        //newRecord["artists"[i]].name=inputName;
+    }
+    newRecord["artists"] = inputArtist;
+
+    string band = io:readln("Enter Band Name: ");
+    newRecord["band"] = band;
+
+    json[] inputSongs = <json[]>newRecord["songs"];
+    string inputTitle = io:readln("Enter Song Title: ");
+    string inputGenre = io:readln("Enter Song Genre: ");
+    string inputPlatform = io:readln("Enter song platform: ");
+    inputSongs[0] = {title: inputTitle, genre: inputGenre, platform: inputPlatform};
+    newRecord["songs"] = inputSongs;
+
+    io:println("A record has been updated as follows: ", newRecord.toJsonString());
+    displayOptions();
+        
+}
+function readKey() {
+    map<json> readRecord = {
+        songKey: ""
+    };
+
+    string inputKey = io:readln("Enter Song Key Number: ");
+    readRecord["songKey"] = inputKey;
+    
+}
+function readKeyVersion() {
+    map<json> readRecord = {
+        songKey: "",
+        songVersion: ""
+    };
+}
+
+function readCriteria() {
+    map<json> readRecord= {
+        songKey: "",
+        songVersion: "",
+        date: "",
+        artists: [],
+        band: "",
+        songs: []
+    };
+
+    io:println("Searching a record by criteria or combination of criterion:.....");
+
+    //Prompting User for the Key
+    io:println("Do you wish to add the Key to the criteria?(Reply Y/N)");
+    string choice = io:readln("Enter Choice: ");
+    while (choice != "Y" && choice != "N") {
+        io:println("Error!! Invalid input!");
+        choice = io:readln("Enter Y or N: ");
+    }
+    if(choice == "Y"){
+        string inputKey = io:readln("Enter Song Key Number: ");
+    readRecord["songKey"] = inputKey;
+    
+    }
+    
+    else if (choice == "N"){
+        io:println("The record key will not be included in the search criteria!");
+    }
+
+    //Prompting user for the Version Number
+    io:println("Do you wish to add the Version to the criteria?(Reply Y/N)");
+    choice = io:readln("Enter Choice: ");
+    while (choice != "Y" && choice != "N") {
+        io:println("Error!! Invalid input!");
+        choice = io:readln("Enter Y or N: ");
+    }
+    if(choice == "Y"){
+        string inputVersion = io:readln("Enter Version Number: ");
+        readRecord["songVersion"] = inputVersion;
+        
+    }
+    else if (choice == "N"){
+        io:println("The record Version will not be included in the search criteria!");
+    }
+   
+    
+
+    string inputDate = io:readln("Add date in the format: DD/MM/YYYY: ");
+    readRecord["date"] = inputDate;
+    //Does user want to add more criteria
+        string moreCriteria = io:readln("Do you wish to add more criteria?(Reply Y/N)");
+        while (choice != "Y" && choice != "N") {
+        io:println("Error!! Invalid input!");
+        choice = io:readln("Enter Y or N: ");
+        }
+    
+    int|error totalArtistsEr = 'int:fromString(io:readln("Enter total number of contributing artists: "));
+    int totalArtists = <int> totalArtistsEr;
+
+    json[] inputArtist = <json[]>newRecord["artists"];
+    foreach int i in 0..<totalArtists{
+        string inputName = io:readln("Enter Artist Name: ");
+        string inputMember = io:readln("Member(Enter yes or no): ");
+        //Write to the map        
+        inputArtist[i] = {name: inputName, member: inputMember};
+        //newRecord["artists"[i]].name=inputName;
+    }
+    newRecord["artists"] = inputArtist;
+
+    string band = io:readln("Enter Band Name: ");
+    newRecord["band"] = band;
+
+    json[] inputSongs = <json[]>newRecord["songs"];
+    string inputTitle = io:readln("Enter Song Title: ");
+    string inputGenre = io:readln("Enter Song Genre: ");
+    string inputPlatform = io:readln("Enter song platform: ");
+    inputSongs[0] = {title: inputTitle, genre: inputGenre, platform: inputPlatform};
+    newRecord["songs"] = inputSongs;
+
+    io:println("A record has been updated as follows: ", newRecord.toJsonString());
+    displayOptions();
+     
+}
+function readRecord(){
+    io:println("How would you like to search a record? Pick a nummber Option Below: ");
+    io:println("1: Search by Key Only: ");
+    io:println("2: Search by Key and Version: ");
+    io:println("3: Search by Criteroin: ");
+
+    string choice = io:readln("Enter Choice: ");
+    if(choice == "1"){
+        readKey();
+    }
+    else if(choice == "2"){
+        readKeyVersion();
+    }
+    else if(choice == "3"){
+        readCriteria();
+    }
+    else{
+        io:println("Error!! Incorrcet input.");
+        readRecord();
+    }
+    displayOptions();
+}
+function exit() {
+    io:println("*******************GOOD BYE!!***********************");
 }
 
 public function main (string... args) {
