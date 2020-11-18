@@ -279,8 +279,8 @@ public function main (string... args) {
 			member: "yes"
 		},
 		{
-			name: "Baaba Maal"),
-			member: "no")
+			name: "Baaba Maal",
+			member: "no"
 		}
 	],
 	band: "Mumford & Sons",
