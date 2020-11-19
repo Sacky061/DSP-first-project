@@ -3,6 +3,13 @@ import ballerina/log;
 import ballerina/io;
 import ballerina/lang.'int;
 
+
+
+
+
+
+
+
 function displayOptions(){
     io:println("Please select a number below according to what you wish to do today");
     io:println("1. Write a new record");
@@ -251,6 +258,48 @@ function exit() {
     io:println("*******************GOOD BYE!!***********************");
 }
 
+//Closes a readable channel.
+function closeRc(io:ReadableCharacterChannel rc) {
+    var result = rc.close();
+    if (result is error) {
+        log:printError("Error occurred while closing character stream",
+                        err = result);
+    }
+}
+//Closes a writable channel.
+function closeWc(io:WritableCharacterChannel wc) {
+    var result = wc.close();
+    if (result is error) {
+        log:printError("Error occurred while closing character stream",
+                        err = result);
+    }
+}
+//writes the provided json to the specified path
+function write(json content, string path) returns @tainted error? {
+
+    //Creates a writable byte channel from the given path.
+    io:WritableByteChannel wbc = check io:openWritableFile(path);
+     
+    //Derives the character channel from the byte channel. 
+    io:WritableCharacterChannel wch = new (wbc, "UTF8");
+    var result = wch.writeJson(content);
+    closeWc(wch);
+    return result;
+}
+
+//Reads a json value from the specified path.
+function read(string path) returns @tainted json|error {
+
+   // Creates a readable byte channel from the given path.
+    io:ReadableByteChannel rbc = check io:openReadableFile(path);
+
+    //Derives the character channel from the byte channel.
+    io:ReadableCharacterChannel rch = new (rbc, "UTF8");
+    var result = rch.readJson();
+    closeRc(rch);
+    return result;
+}
+
 public function main (string... args) {
 
     caliBlockingClient caliBlockingEp = new("http://localhost:9090");
@@ -266,6 +315,8 @@ public function main (string... args) {
 
 
     log:printInfo("Create a new record");
+    //Path where the json files will be stored, created a folder on desktop where the json files will be stored
+    string filePath = "C:/Users/metum/OneDrive/Desktop/Database/records.json";
     json j1 = {
 		RecordVersionNo: "01",
         date: "22/10/2020 ",
@@ -293,6 +344,22 @@ public function main (string... args) {
 	]
 
     };
+    io:println("Preparing to write json file");
+
+    //writes a json content
+    var wResult = write(j1, filePath);
+    if (wResult is error) {
+        log:printError("Error occurred while writing json: ", wResult);
+    } else {
+        io:println("Preparing to read the content written");
+    //  reads a json content
+        var rResult = read(filePath);
+        if (rResult is error) {
+            log:printError("Error occurred while reading json: ",
+                            err = rResult);
+        } else {
+            io:println(rResult.toJsonString());
+
     var addResponse = caliblockingEp->addRecords(recordReq);
     if (addResponse is error) {
         log:printError("Error from Connector: " + addResponse.reason() + " - "
@@ -330,5 +397,3 @@ public function main (string... args) {
         log:printInfo("Response - " + result + "\n");
     }
 }
-
-
