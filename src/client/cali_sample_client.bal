@@ -251,9 +251,56 @@ function exit() {
     io:println("*******************GOOD BYE!!***********************");
 }
 
+
+
+//Functions that allow for the System to Read and Write to a JSON File
+function closeRc(io:ReadableCharacterChannel rc) {
+    var result = rc.close();
+    if (result is error) {
+        log:printError("Error occurred while closing character stream",err = result);
+    }
+}
+
+function closeWc(io:WritableCharacterChannel wc) {
+    var result = wc.close();
+    if (result is error) {
+        log:printError("Error occurred while closing character stream",err = result);
+    }
+}
+
+function write(json content, string path) returns @tainted error? {
+
+    io:WritableByteChannel wbc = check io:openWritableFile(path);
+
+    io:WritableCharacterChannel wch = new (wbc, "UTF8");
+    var result = wch.writeJson(content);
+    closeWc(wch);
+    return result;
+}
+
+function read(string path) returns @tainted json|error {
+
+    io:ReadableByteChannel rbc = check io:openReadableFile(path);
+
+    io:ReadableCharacterChannel rch = new (rbc, "UTF8");
+    var result = rch.readJson();
+    closeRc(rch);
+    return result;
+}
+
+
+
+
+
+
+
 public function main (string... args) {
 
     caliBlockingClient caliBlockingEp = new("http://localhost:9090");
+    string fileName = "Record";
+    
+    //path to json file location
+    string filePath = "./files/" + fileName + ".json";
 
     // Add a new record 
     io:println("*****************************************************************************");
