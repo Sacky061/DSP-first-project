@@ -29,7 +29,7 @@ service cali on ep {
     //Value to be hashed
     string recordVersionNo ="record version number";
     byte[] versionNo = recordVersionNo.toBytes();
-    result = crypto:hashSha1(versionNoArr);
+    result = crypto:hashSha1(versionNo);
     io:println("Base64 encoded hash with SHA1: " + result.toBase64());
         
         // reference to RSA private key
