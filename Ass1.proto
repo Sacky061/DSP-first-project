@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+service cali{
+
+    rpc addRecord(addRequest) returns (addResponse);
+    rpc updateRecord(updateRequest) returns (updateResponse);
+    rpc readRecord(readRequest) returns (readResponse);
+}
+
+ 
+message addRequest{
+
+        
+        string songVersion = 1;
+        string date= 2;
+        
+        message artistDetails{
+            
+                string name =1;
+                string member =2;
+            
+        }
+        
+        repeated artistDetails allArtists = 3;
+        
+        string band = 4;
+        message song{
+            string title = 1;
+			string genre = 2;
+			string platform = 3;
+        }
+        
+        repeated song songDetails = 5;
+        
+       
+}
+
+message updateRequest{
+    string songKey = 1;
+    string songVersion = 2;
+    string date= 3;
+        
+    message updateartistDetails{
+            
+                string name =1;
+                string member =2;
+            
+        }
+        
+        repeated updateartistDetails allArtists = 4;
+        
+        string band = 5;
+        message updatesong{
+            string title = 1;
+			string genre = 2;
+			string platform = 3;
+        }
+        
+        repeated updatesong songDetails = 6;
+        
+        
+    
+}
+
+message readRequest{
+
+    string songKey = 1;
+    string songVersion = 2;
+        string date= 3;
+        
+        message readartistDetails{
+            
+                string name =1;
+                string member =2;
+            
+        }
+        
+        repeated readartistDetails allArtists = 4;
+        
+        string band = 5;
+        message readsong{
+            string title = 1;
+			string genre = 2;
+			string platform = 3;
+        }
+        
+        repeated readsong songDetails = 6;
+        
+    
+}
+
+message addResponse{
+
+    string addStatus =1;
+    string songVersion = 2;
+    string songKey= 3;       
+        
+    
+}
+
+message updateResponse{
+
+    string updateStatus = 1;
+    updateRequest newVersion = 2;
+
+    
+}
+
+message readResponse{
+    string readStatus = 1;
+    repeated updateRequest readResult = 2;
+    
+}
