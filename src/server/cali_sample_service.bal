@@ -2,6 +2,7 @@ import ballerina/grpc;
 import ballerina/crypto;
 import ballerina/io;
 import ballerina/math;
+import ballerina/lang.'string;
 
 listener grpc:Listener ep = new (9090);
 map<addRequest> caliMap = {};
@@ -19,11 +20,17 @@ service cali on ep {
         if (result is error) {
             log:printError("Error from Connector: " + result.reason() + "-" + <tring>result.detail()["message"] + "\n");
         }
-
-        // SHA1 hashing algorithm
-        byte[] verionNoArr = recordVersionNo.toBytes();
-        result = crypto:hashSha1(verionNoArr);
-        io:println("Base64 encoded hash with SHA1: " + result.toBase64());
+        caliMap[string.convert(recordVersionNo)] = value;
+        json j1 = checkpanic json.convert(caliMap[string.convert(recordVersionNo)]);
+        string newValue = "Record value "+j1.toString();
+    }
+    // SHA1 hashing algorithm
+    public function hashSha1(byte[] recordVersionNo) returns byte[] {
+    //Value to be hashed
+    string recordVersionNo ="record version number";
+    byte[] versionNo = recordVersionNo.toBytes();
+    result = crypto:hashSha1(versionNoArr);
+    io:println("Base64 encoded hash with SHA1: " + result.toBase64());
         
         // reference to RSA private key
     crypto:KeyStore keyStore = {path: "./sampleKeystore.p12", password: "ballerina"};
@@ -31,7 +38,7 @@ service cali on ep {
 
     if (privateKey is crypto:PrivateKey) {
         // signing input value and printing signature value
-        result = check crypto:signRsaSha1(verionNoArr, privateKey);
+        result = check crypto:signRsaSha1(versionNo, privateKey);
         io:println("Base64 encoded RSA-SHA1 signature: " + result.toBase64());
         } else {
         io:println("Invalid private key");
@@ -41,18 +48,13 @@ service cali on ep {
      foreach var i in 0 ... 15 {
         rsaKeyArr[i] = <byte>(math:randomInRange(0, 255));
      }
-     result = check crypto:encryptAesCbc(verionNoArr, rsaKeyArr, ivArr);
+     result = check crypto:encryptAesCbc(versionNo, rsaKeyArr, ivArr);
      result = check crypto:decryptAesCbc(result, rsaKeyArr, ivArr);
      io:println("AES CBC PKCS5 decrypted value: " + check 'string:fromBytes(result));
      // public key  used for RSA encryption
      crypto:PublicKey rsaPublicKey = check crypto:decodePublicKey(keyStore, "ballerina");
      // private key used for RSA decryption
      crypto:PrivateKey rsaPrivateKey = check crypto:decodePrivateKey(keyStore, "ballerina","ballerina");
-
-        caliMap[string.convert(recordVersionNo)] = value;
-        json j1 = checkpanic json.convert(caliMap[string.convert(recordVersionNo)]);
-        string newValue = "Record value "+j1.toString();
-    
     }
     resource function updateRecord(grpc:Caller caller, updateRequest value) {
     string payload;
