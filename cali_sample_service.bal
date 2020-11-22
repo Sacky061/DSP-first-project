@@ -1,22 +1,33 @@
 import ballerina/grpc;
-import ballerina/io;
+//import ballerina/io;
 //import ballerina/log;
 
-listener grpc:Listener ep = new (9090);
+listener grpc:Listener ep = new (9092);
 
 service cali on ep {
    
-    resource function addRecord(grpc:Caller caller, addRequest value, io:ReadableCSVChannel csvChannel) returns error?{
-        // Implementation goes here.
-    
-        addResponse resp = {
-        addStatus: "Successfully added record",
-        songVersion: value.songVersion,
-        songKey: "01"
-        };
+    resource function addRecord(grpc:Caller caller, addRequest value) returns @tainted error?{ //, io:ReadableCSVChannel csvChannel, io:WritableCSVChannel wCsvChannel)
+        //Create an object of type updateRequest check caller->send(resp);(to enable addition of key)
+        check caller->send("Server is processing......");
+        updateRequest update = {
+            songKey: "hashFunction Provides",
+            songVersion: value.songVersion,
+            date: value.date,
+            allArtists: value.allArtists,
+            band: value.band,
+            songDetails: value.songDetails
 
-        check caller->send(resp);
-         check caller->complete();
+        };
+        
+        addResponse resp = {
+                addStatus: "Record Successfully Added",
+                songVersion: value.songVersion,
+                songKey: update.songKey
+                };
+
+                check caller->send(resp);
+                 check caller->complete();
+
     }
     resource function updateRecord(grpc:Caller caller, updateRequest value) {
         // Implementation goes here.
