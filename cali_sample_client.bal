@@ -28,7 +28,7 @@ function displayOptions(){
         io:println("Error: Incorrect input");
         displayOptions();
     }
-    }
+}
 
 //A function to add records
 function addRecord(){
