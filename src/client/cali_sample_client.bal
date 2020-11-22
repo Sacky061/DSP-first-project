@@ -1,8 +1,10 @@
 import ballerina/grpc;
-import ballerina/log;
 import ballerina/io;
 import ballerina/lang.'int;
 
+//Port Number
+string port = "http://localhost:9092";
+//A display function that lets the user select the diferent operation options available to them
 function displayOptions(){
     io:println("Please select a number below according to what you wish to do today");
     io:println("1. Write a new record");
@@ -10,7 +12,7 @@ function displayOptions(){
     io:println("3. Read a record");
     io:println("4. Exit");
     string choice = io:readln("Enter Choice: ");
-
+    
     if (choice == "1"){
         addRecord();
     }
@@ -30,128 +32,190 @@ function displayOptions(){
     }
     }
 
-
+//A function to add records
 function addRecord(){
 
     io:println("                 ADDING A NEW RECORD.....");
+        
+    string inputVersion= io:readln("Enter Version Number: ");
+    string inputDate=io:readln("Add date in the format: DD/MM/YYYY: ");
     
-    map<json> newRecord= {
-        songVersion: "",
-        date: "",
-        artists: [],
-        band: "",
-        songs: []
-    };
-
-    string inputVersion = io:readln("Enter Version Number: ");
-    newRecord["songVersion"] = inputVersion;
-
-    string inputDate = io:readln("Add date in the format: DD/MM/YYYY: ");
-    newRecord["date"] = inputDate;
-    
+    string inputBand = io:readln("Enter Band Name: ");
     int|error totalArtistsEr = 'int:fromString(io:readln("Enter total number of contributing artists: "));
     int totalArtists = <int> totalArtistsEr;
 
-    json[] inputArtist = <json[]>newRecord["artists"];
+      
+    artistDetails inputArtist={};
+    artistDetails[] arrayArtists = [];
+
     foreach int i in 0..<totalArtists{
-        string inputName = io:readln("Enter Artist Name: ");
-        string inputMember = io:readln("Member(Enter yes or no): ");
-        //Write to the map        
-        inputArtist[i] = {name: inputName, member: inputMember};
-        //newRecord["artists"[i]].name=inputName;
+        //addNew.allArtists[i].name = io:readln("Enter Artist Name: ");
+        //addNew.allArtists[i].member = io:readln("Member(Enter yes or no): ");
+        inputArtist["name"] = io:readln("Enter Artist Name: ");        
+        inputArtist["member"] = io:readln("Member(Enter yes or no): ");
+        arrayArtists[i] = {name: inputArtist["name"], member: inputArtist["member"]};
     }
-    newRecord["artists"] = inputArtist;
+    
+    song songInfo = {};
+    songInfo["title"] = io:readln("Enter Song Title: ");
+    
+    songInfo["genre"] = io:readln("Enter Song Genre: ");
+    
+    songInfo["platform"] = io:readln("Enter song platform: ");
+    song[] songArray = [songInfo];
+    
+        
+    addRequest addNew = {songVersion: inputVersion,
+    date:inputDate,
+    
+    band:inputBand,
+    allArtists:arrayArtists,
+    songDetails:songArray
+    
+    };
+    
+    io:println("Waiting for Server Response........");
+    //Sending the add requests 
+    caliBlockingClient blockingEp = new(port);
+    
+    var addResponse = blockingEp->addRecord(addNew);
+    if (addResponse is grpc:Error) {
+        io:println("Error from Connector: " + addResponse.reason() + " - "
+                                                + <string>addResponse.detail()["message"] + "\n");
+    } else {
 
-    string band = io:readln("Enter Band Name: ");
-    newRecord["band"] = band;
-
-    json[] inputSongs = <json[]>newRecord["songs"];
-    string inputTitle = io:readln("Enter Song Title: ");
-    string inputGenre = io:readln("Enter Song Genre: ");
-    string inputPlatform = io:readln("Enter song platform: ");
-    inputSongs[0] = {title: inputTitle, genre: inputGenre, platform: inputPlatform};
-    newRecord["songs"] = inputSongs;
-
-    io:println("The newly added record is: ", newRecord.toJsonString());
-    displayOptions();
+            io:println("File Succesfully added: ",addResponse);
+       
+    }
+    io:println("Add request details sent were: ", addNew.toString());
+    
         
 }
 
+//A function to update records****************************************************************
 function updateRecord() {
 
     io:println("                 UPDATING A RECORD.....");
     
-    map<json> newRecord= {
-        songKey: "",
-        songVersion: "",
-        date: "",
-        artists: [],
-        band: "",
-        songs: []
-    };
-
-    string inputKey = io:readln("Enter Song Key Number: ");
-    newRecord["songKey"] = inputKey;
-
-    string inputVersion = io:readln("Enter Version Number: ");
-    newRecord["songVersion"] = inputVersion;
-
-    string inputDate = io:readln("Add date in the format: DD/MM/YYYY: ");
-    newRecord["date"] = inputDate;
+    string inputKeyUpdate = io:readln("Enter Song Key Number: ");
     
-    int|error totalArtistsEr = 'int:fromString(io:readln("Enter total number of contributing artists: "));
-    int totalArtists = <int> totalArtistsEr;
+    string inputVersionUpdate= io:readln("Enter Version Number: ");
+    string inputDateUpdate=io:readln("Add date in the format: DD/MM/YYYY: ");
+    
+    string inputBandUpdate = io:readln("Enter Band Name: ");
+    int|error totalArtistsErUpdate = 'int:fromString(io:readln("Enter total number of contributing artists: "));
+    int totalArtistsUpdate = <int> totalArtistsErUpdate;
 
-    json[] inputArtist = <json[]>newRecord["artists"];
-    foreach int i in 0..<totalArtists{
-        string inputName = io:readln("Enter Artist Name: ");
-        string inputMember = io:readln("Member(Enter yes or no): ");
-        //Write to the map        
-        inputArtist[i] = {name: inputName, member: inputMember};
-        //newRecord["artists"[i]].name=inputName;
+    updateartistDetails inputArtistUpdate={};
+    updateartistDetails[] arayArtistsUpdate = [];
+    foreach int i in 0..<totalArtistsUpdate{
+        
+        arayArtistsUpdate[i].name = io:readln("Enter Artist Name: ");
+        
+        arayArtistsUpdate[i].member = io:readln("Member(Enter yes or no): ");
+        
     }
-    newRecord["artists"] = inputArtist;
+    
+    updatesong[] songInfoUpdate = [];
+    songInfoUpdate[0].title = io:readln("Enter Song Title: ");
+    
+    songInfoUpdate[0].genre = io:readln("Enter Song Genre: ");
+    
+    songInfoUpdate[0].platform = io:readln("Enter song platform: ");
+    
+    //send the write/add request
+        
+    updateRequest newUpdate = {
+        songKey: inputKeyUpdate,
+        songVersion: inputVersionUpdate,
+    date:inputDateUpdate,
+    
+    band:inputBandUpdate,
+    allArtists:arayArtistsUpdate,
+    songDetails:songInfoUpdate
+    
+    };
+    
+    io:println("Waiting for Server Response........");
 
-    string band = io:readln("Enter Band Name: ");
-    newRecord["band"] = band;
+    caliBlockingClient blockingEp = new(port);
+    
+    var updateResponse = blockingEp->updateRecord(newUpdate);
+    if (updateResponse is grpc:Error) {
+        io:println("Error from Connector: " + updateResponse.reason() + " - "
+                                                + <string>updateResponse.detail()["message"] + "\n");
+    } else {
 
-    json[] inputSongs = <json[]>newRecord["songs"];
-    string inputTitle = io:readln("Enter Song Title: ");
-    string inputGenre = io:readln("Enter Song Genre: ");
-    string inputPlatform = io:readln("Enter song platform: ");
-    inputSongs[0] = {title: inputTitle, genre: inputGenre, platform: inputPlatform};
-    newRecord["songs"] = inputSongs;
-
-    io:println("A record has been updated as follows: ", newRecord.toJsonString());
-    displayOptions();
+            io:println("File Succesfully added: ",updateResponse);
+        
+    }
+    io:println("Add request details sent were: ", newUpdate.toString());
+    
         
 }
-function readKey() {
-    map<json> readRecord = {
-        songKey: ""
-    };
 
-    string inputKey = io:readln("Enter Song Key Number: ");
-    readRecord["songKey"] = inputKey;
+
+//A function for sending read requests with only a key provided******************************************
+function readKey() {
+    
+    string keyInput = io:readln("Enter Song Key Number: ");
+
+    readRequest newRead = {
+            songKey:keyInput
+    };  
+
+    //Send Read request
+    io:println("Waiting for Server Response........");
+
+    caliBlockingClient blockingEp = new(port);
+    
+    var readResponse = blockingEp->readRecord(newRead);
+    if (readResponse is grpc:Error) {
+        io:println("Error from Connector: " + readResponse.reason() + " - "
+                                                + <string>readResponse.detail()["message"] + "\n");
+    } else {
+
+            io:println("File Succesfully added: ",readResponse);
+        
+    }
+    io:println("Add request details sent were: ", newRead.toString());
+    
+    
     
 }
+
+//A function for sending a read request using a key and version
 function readKeyVersion() {
-    map<json> readRecord = {
-        songKey: "",
-        songVersion: ""
+    
+    string keyInput = io:readln("Enter Song Key Number: ");
+    string readSongVersion = io:readln("Enter Song Version Number: ");
+    readRequest newRead = {
+            songKey:keyInput,
+            songVersion: readSongVersion
     };
+    
+    //sendReadRequest();
+    io:println("Waiting for Server Response........");
+
+    caliBlockingClient blockingEp = new(port);
+    
+    var readResponse = blockingEp->readRecord(newRead);
+    if (readResponse is grpc:Error) {
+        io:println("Error from Connector: " + readResponse.reason() + " - "
+                                                + <string>readResponse.detail()["message"] + "\n");
+    } else {
+
+            io:println("File Succesfully added: ",readResponse);
+        
+    }
+    io:println("Add request details sent were: ", newRead.toString());
+    
+    
 }
 
+//A function to send read requests using a specified criteria
 function readCriteria() {
-    map<json> readRecord= {
-        songKey: "",
-        songVersion: "",
-        date: "",
-        artists: [],
-        band: "",
-        songs: []
-    };
-
+    readRequest newRead = {};      
     io:println("Searching a record by criteria or combination of criterion:.....");
 
     //Prompting User for the Key
@@ -162,8 +226,7 @@ function readCriteria() {
         choice = io:readln("Enter Y or N: ");
     }
     if(choice == "Y"){
-        string inputKey = io:readln("Enter Song Key Number: ");
-    readRecord["songKey"] = inputKey;
+        newRead["songKey"] = io:readln("Enter Song Key Number: ");   
     
     }
     
@@ -179,52 +242,138 @@ function readCriteria() {
         choice = io:readln("Enter Y or N: ");
     }
     if(choice == "Y"){
-        string inputVersion = io:readln("Enter Version Number: ");
-        readRecord["songVersion"] = inputVersion;
-        
+        newRead["songVersion"] = io:readln("Enter Song Version Number: ");
+                
     }
     else if (choice == "N"){
         io:println("The record Version will not be included in the search criteria!");
     }
-   
-    
-
-    string inputDate = io:readln("Add date in the format: DD/MM/YYYY: ");
-    readRecord["date"] = inputDate;
-    //Does user want to add more criteria
-        string moreCriteria = io:readln("Do you wish to add more criteria?(Reply Y/N)");
-        while (choice != "Y" && choice != "N") {
+       
+    //Prompting user for the date
+    io:println("Do you wish to add the Date to the criteria?(Reply Y/N)");
+    choice = io:readln("Enter Choice: ");
+    while (choice != "Y" && choice != "N") {
         io:println("Error!! Invalid input!");
         choice = io:readln("Enter Y or N: ");
-        }
-    
-    int|error totalArtistsEr = 'int:fromString(io:readln("Enter total number of contributing artists: "));
-    int totalArtists = <int> totalArtistsEr;
-
-    json[] inputArtist = <json[]>newRecord["artists"];
-    foreach int i in 0..<totalArtists{
-        string inputName = io:readln("Enter Artist Name: ");
-        string inputMember = io:readln("Member(Enter yes or no): ");
-        //Write to the map        
-        inputArtist[i] = {name: inputName, member: inputMember};
-        //newRecord["artists"[i]].name=inputName;
     }
-    newRecord["artists"] = inputArtist;
+    if(choice == "Y"){
+        newRead["date"] = io:readln("State date in the format: DD/MM/YYYY: ");
+                
+    }
+    else if (choice == "N"){
+        io:println("The Date will not be included in the search criteria!");
+    }
+    
+    //Does user want to add artist name(s) to criteria
+    choice = io:readln("Do you wish to add artist name(s) to the criteria?(Reply Y/N)");
+    while (choice != "Y" && choice != "N") {
+    io:println("Error!! Invalid input!");
+    choice = io:readln("Enter Y or N: ");
+    }
+    if(choice == "Y"){
+        int|error totalArtistsErRead = 'int:fromString(io:readln("Enter the total number artists you wish to add to the criteria: "));
+        int totalArtistsRead = <int> totalArtistsErRead;
 
-    string band = io:readln("Enter Band Name: ");
-    newRecord["band"] = band;
+        //readartistDetails inputArtistRead1={};
+        readartistDetails[] arayArtistsRead1 = [];
+        foreach int i in 0..<totalArtistsRead{
+        
+        arayArtistsRead1[i].name = io:readln("Enter Artist Name: ");
+        
+        arayArtistsRead1[i].member = io:readln("Member(Enter yes or no): ");
+        
+    }
+        newRead["allArtists"] = arayArtistsRead1;
+    }
+    else if (choice == "N"){
+        io:println("The Artist name(s) will not be included in the search criteria!");
+    }
+    
+    //Does user want to include band name
+    io:println("Do you wish to add the band name to the criteria?(Reply Y/N)");
+    choice = io:readln("Enter Choice: ");
+    while (choice != "Y" && choice != "N") {
+        io:println("Error!! Invalid input!");
+        choice = io:readln("Enter Y or N: ");
+    }
+    if(choice == "Y"){
+        newRead["band"] = io:readln("Enter Band Name: ");
+             
+    }
+    else if (choice == "N"){
+        io:println("The Band Name will not be included in the search criteria!");
+    }
+    
+    //readsong songInfoRead = {};
+    readsong[] songInfoRead = [];
+    
+    //Does user want to include song name
+    io:println("Do you wish to add the song name to the criteria?(Reply Y/N)");
+    choice = io:readln("Enter Choice: ");
+    while (choice != "Y" && choice != "N") {
+        io:println("Error!! Invalid input!");
+        choice = io:readln("Enter Y or N: ");
+    }
+    if(choice == "Y"){
+        songInfoRead[0].title = io:readln("Enter Song Title: ");      
+    }
+    else if (choice == "N"){
+        io:println("The Song Name will not be included in the search criteria!");
+    }
 
-    json[] inputSongs = <json[]>newRecord["songs"];
-    string inputTitle = io:readln("Enter Song Title: ");
-    string inputGenre = io:readln("Enter Song Genre: ");
-    string inputPlatform = io:readln("Enter song platform: ");
-    inputSongs[0] = {title: inputTitle, genre: inputGenre, platform: inputPlatform};
-    newRecord["songs"] = inputSongs;
+    //Does user want to include Genre
+    io:println("Do you wish to add the Genre to the criteria?(Reply Y/N)");
+    choice = io:readln("Enter Choice: ");
+    while (choice != "Y" && choice != "N") {
+        io:println("Error!! Invalid input!");
+        choice = io:readln("Enter Y or N: ");
+    }
+    if(choice == "Y"){
+        songInfoRead[0].genre = io:readln("Enter Song Genre: ");      
+    }
+    else if (choice == "N"){
+        io:println("The Song Genre will not be included in the search criteria!");
+    }
 
-    io:println("A record has been updated as follows: ", newRecord.toJsonString());
-    displayOptions();
+    //Does user want to include Platform
+    io:println("Do you wish to add the Platform to the criteria?(Reply Y/N)");
+    choice = io:readln("Enter Choice: ");
+    while (choice != "Y" && choice != "N") {
+        io:println("Error!! Invalid input!");
+        choice = io:readln("Enter Y or N: ");
+    }
+    if(choice == "Y"){
+        songInfoRead[0].platform = io:readln("Enter song platform: ");   
+    }
+    else if (choice == "N"){
+        io:println("The Song Platform will not be included in the search criteria!");
+    }   
+    newRead["songDetails"] = songInfoRead;
      
+    
+    //Send Read Request and wait for response
+    io:println("Waiting for Server Response........");
+    
+    caliBlockingClient blockingEp = new(port);
+    
+    var readResponse = blockingEp->readRecord(newRead);
+    if (readResponse is grpc:Error) {
+        io:println("Error from Connector: " + readResponse.reason() + " - "
+                                                + <string>readResponse.detail()["message"] + "\n");
+    } else {
+
+            io:println("File Succesfully added: ",readResponse);
+        
+    }
+    io:println("Add request details sent were: ", newRead.toString());
+    
+    
+        
 }
+
+
+
+//A function that allows the user to pick the type of read request they want to perform
 function readRecord(){
     io:println("How would you like to search a record? Pick a nummber Option Below: ");
     io:println("1: Search by Key Only: ");
@@ -245,64 +394,21 @@ function readRecord(){
         io:println("Error!! Incorrcet input.");
         readRecord();
     }
+
+    
     displayOptions();
+    //send the read request to the server
+    
 }
 function exit() {
     io:println("*******************GOOD BYE!!***********************");
 }
 
-
-
-//Functions that allow for the System to Read and Write to a JSON File
-function closeRc(io:ReadableCharacterChannel rc) {
-    var result = rc.close();
-    if (result is error) {
-        log:printError("Error occurred while closing character stream",err = result);
-    }
-}
-
-function closeWc(io:WritableCharacterChannel wc) {
-    var result = wc.close();
-    if (result is error) {
-        log:printError("Error occurred while closing character stream",err = result);
-    }
-}
-
-function write(json content, string path) returns @tainted error? {
-
-    io:WritableByteChannel wbc = check io:openWritableFile(path);
-
-    io:WritableCharacterChannel wch = new (wbc, "UTF8");
-    var result = wch.writeJson(content);
-    closeWc(wch);
-    return result;
-}
-
-function read(string path) returns @tainted json|error {
-
-    io:ReadableByteChannel rbc = check io:openReadableFile(path);
-
-    io:ReadableCharacterChannel rch = new (rbc, "UTF8");
-    var result = rch.readJson();
-    closeRc(rch);
-    return result;
-}
-
-
-
-
-
-
-
 public function main (string... args) {
 
-    caliBlockingClient caliBlockingEp = new("http://localhost:9090");
-    string fileName = "Record";
-    
-    //path to json file location
-    string filePath = "./files/" + fileName + ".json";
+    //caliBlockingClient blockingEp = new(port);
 
-    // Add a new record 
+    // Welcome message
     io:println("*****************************************************************************");
     io:println("*****************************************************************************");
     io:println("                     WELCOME TO CALI: A MUSIC STORAGE SYSTEM");
@@ -310,86 +416,21 @@ public function main (string... args) {
     io:println("*****************************************************************************");
     displayOptions();
     
-
-
-    log:printInfo("Create a new record");
-    json j1 = {
-		RecordVersionNo: "01",
-        date: "22/10/2020 ",
-	artists: [
-		{
-			name: "Winston Marshall",
-			member: "yes"
-		},
-		{
-			name: "Ben Lovett",
-			member: "yes"
-		},
-		{
-			name: "Baaba Maal",
-			member: "no"
-		}
-	],
-	band: "Mumford & Sons",
-	songs: [
-		{
-			title: "There will be time",
-			genre: "folk rock",
-			platform: "Deezer"
-		}
-	]
-
-    };
-    var addResponse = caliblockingEp->addRecords(recordReq);
-    if (addResponse is error) {
-        log:printError("Error from Connector: " + addResponse.reason() + " - "
-                                                + <string>addResponse.detail().message + "\n");
-    } else {
-        string result;
-        grpc:Headers resHeaders;
-        (result, resHeaders) = addResponse;
-        log:printValue("Response - " + result + "\n");
-    }
-
-	// Update the record
-    log:printInfo("Update the Record");
-    recordInfo updateReq = {recordVersionNo:"01", description:"Updated."};
-    var updateResponse = caliBlockingEp->updateRecord(updateReq);
-    if (updateResponse is error) {
-        log:printError("Error from Connector: " + updateResponse.reason() + " - "
-                                                + <string>updateResponse.detail()["message"] + "\n");
-    } else {
-        string result;
-        grpc:Headers resHeaders;
-        [result, resHeaders] = updateResponse;
-        log:printInfo("Response - " + result + "\n");
-    }
-	// read the record
-    log:printInfo("Read the Record");
-    var readResponse = caliBlockingEp->readRecord("01");
-    if (readResponse is error) {
-        log:printError("Error from Connector: " + readResponse.reason() + " - "
-                                                + <string>readResponse.detail()["message"] + "\n");
-    } else {
-        string result;
-        grpc:Headers resHeaders;
-        [result, resHeaders] = readResponse;
-        log:printInfo("Response - " + result + "\n");
-    }
 }
-service recordMessageListener = service {
 
-    resource function onMessage(string message) {
-        io:println("Response received from server: " + message);
-    }
 
-    resource function onError(error err) {
-        io:println("Error from Connector: " + err.reason() + " - " + <string>err.detail().message);
-    }
 
-    resource function onComplete() {
-        io:println("Server Complete Sending Responses.");
-    }
-};
+
+
+
+
+//public function main (string... args) {
+
+  //  caliBlockingClient blockingEp = new("http://localhost:9090");
+
+//}
+
+
+
 
 
