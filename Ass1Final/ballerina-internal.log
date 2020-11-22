@@ -1,0 +1,126 @@
+[2020-11-22 20:45:32,081] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at andre.server.$value$cali__service_0.call(cali_sample_service.bal)
+	at org.ballerinalang.jvm.BRuntime.lambda$invokeMethodAsync$2(BRuntime.java:84)
+	at org.ballerinalang.jvm.scheduling.SchedulerItem.execute(Scheduler.java:482)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:263)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 20:45:32,097] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at org.ballerinalang.jvm.StringUtils.fromString(StringUtils.java:124)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:70)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:62)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:67)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:121)
+	at org.ballerinalang.jvm.scheduling.Scheduler.postProcess(Scheduler.java:322)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:280)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 20:53:25,406] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at andre.server.$value$cali__service_0.call(cali_sample_service.bal)
+	at org.ballerinalang.jvm.BRuntime.lambda$invokeMethodAsync$2(BRuntime.java:84)
+	at org.ballerinalang.jvm.scheduling.SchedulerItem.execute(Scheduler.java:482)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:263)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 20:53:25,406] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at org.ballerinalang.jvm.StringUtils.fromString(StringUtils.java:124)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:70)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:62)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:67)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:121)
+	at org.ballerinalang.jvm.scheduling.Scheduler.postProcess(Scheduler.java:322)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:280)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 21:08:34,055] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at andre.server.$value$cali__service_0.call(cali_sample_service.bal)
+	at org.ballerinalang.jvm.BRuntime.lambda$invokeMethodAsync$2(BRuntime.java:84)
+	at org.ballerinalang.jvm.scheduling.SchedulerItem.execute(Scheduler.java:482)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:263)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 21:08:34,071] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at org.ballerinalang.jvm.StringUtils.fromString(StringUtils.java:124)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:70)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:62)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:67)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:121)
+	at org.ballerinalang.jvm.scheduling.Scheduler.postProcess(Scheduler.java:322)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:280)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 21:14:30,424] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at andre.server.$value$cali__service_0.call(cali_sample_service.bal)
+	at org.ballerinalang.jvm.BRuntime.lambda$invokeMethodAsync$2(BRuntime.java:84)
+	at org.ballerinalang.jvm.scheduling.SchedulerItem.execute(Scheduler.java:482)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:263)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 21:14:30,424] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at org.ballerinalang.jvm.StringUtils.fromString(StringUtils.java:124)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:70)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:62)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:67)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:121)
+	at org.ballerinalang.jvm.scheduling.Scheduler.postProcess(Scheduler.java:322)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:280)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 21:21:59,595] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at andre.server.$value$cali__service_0.call(cali_sample_service.bal)
+	at org.ballerinalang.jvm.BRuntime.lambda$invokeMethodAsync$2(BRuntime.java:84)
+	at org.ballerinalang.jvm.scheduling.SchedulerItem.execute(Scheduler.java:482)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:263)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 21:21:59,595] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at org.ballerinalang.jvm.StringUtils.fromString(StringUtils.java:124)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:70)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:62)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:67)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:121)
+	at org.ballerinalang.jvm.scheduling.Scheduler.postProcess(Scheduler.java:322)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:280)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 21:24:35,360] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at andre.server.$value$cali__service_0.call(cali_sample_service.bal)
+	at org.ballerinalang.jvm.BRuntime.lambda$invokeMethodAsync$2(BRuntime.java:84)
+	at org.ballerinalang.jvm.scheduling.SchedulerItem.execute(Scheduler.java:482)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:263)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
+[2020-11-22 21:24:35,360] SEVERE {b7a.log.crash} - null 
+java.lang.NullPointerException
+	at org.ballerinalang.jvm.StringUtils.fromString(StringUtils.java:124)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:70)
+	at org.ballerinalang.jvm.values.ErrorValue.<init>(ErrorValue.java:62)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:67)
+	at org.ballerinalang.jvm.BallerinaErrors.createError(BallerinaErrors.java:121)
+	at org.ballerinalang.jvm.scheduling.Scheduler.postProcess(Scheduler.java:322)
+	at org.ballerinalang.jvm.scheduling.Scheduler.run(Scheduler.java:280)
+	at org.ballerinalang.jvm.scheduling.Scheduler.runSafely(Scheduler.java:231)
+	at java.lang.Thread.run(Thread.java:748)
+ 
