@@ -2,6 +2,8 @@ import ballerina/grpc;
 import ballerina/io;
 import ballerina/lang.'int;
 
+//Port Number
+string port = "http://localhost:9092";
 //A display function that lets the user select the diferent operation options available to them
 function displayOptions(){
     io:println("Please select a number below according to what you wish to do today");
@@ -28,7 +30,7 @@ function displayOptions(){
         io:println("Error: Incorrect input");
         displayOptions();
     }
-}
+    }
 
 //A function to add records
 function addRecord(){
@@ -72,8 +74,9 @@ function addRecord(){
     
     };
     
-    //Sending the add requests via http
-    caliBlockingClient blockingEp = new("http://localhost:9090");
+    io:println("Waiting for Server Response........");
+    //Sending the add requests 
+    caliBlockingClient blockingEp = new(port);
     
     var addResponse = blockingEp->addRecord(addNew);
     if (addResponse is grpc:Error) {
@@ -85,8 +88,7 @@ function addRecord(){
        
     }
     io:println("Add request details sent were: ", addNew.toString());
-    //send the write/add request
-    displayOptions();
+    
         
 }
 
@@ -134,8 +136,9 @@ function updateRecord() {
     
     };
     
-    
-    caliBlockingClient blockingEp = new("http://localhost:9090");
+    io:println("Waiting for Server Response........");
+
+    caliBlockingClient blockingEp = new(port);
     
     var updateResponse = blockingEp->updateRecord(newUpdate);
     if (updateResponse is grpc:Error) {
@@ -147,8 +150,7 @@ function updateRecord() {
         
     }
     io:println("Add request details sent were: ", newUpdate.toString());
-    //send the write/add request
-    displayOptions();
+    
         
 }
 
@@ -163,7 +165,9 @@ function readKey() {
     };  
 
     //Send Read request
-    caliBlockingClient blockingEp = new("http://localhost:9090");
+    io:println("Waiting for Server Response........");
+
+    caliBlockingClient blockingEp = new(port);
     
     var readResponse = blockingEp->readRecord(newRead);
     if (readResponse is grpc:Error) {
@@ -176,7 +180,7 @@ function readKey() {
     }
     io:println("Add request details sent were: ", newRead.toString());
     
-    displayOptions();
+    
     
 }
 
@@ -190,7 +194,23 @@ function readKeyVersion() {
             songVersion: readSongVersion
     };
     
-    sendReadRequest();
+    //sendReadRequest();
+    io:println("Waiting for Server Response........");
+
+    caliBlockingClient blockingEp = new(port);
+    
+    var readResponse = blockingEp->readRecord(newRead);
+    if (readResponse is grpc:Error) {
+        io:println("Error from Connector: " + readResponse.reason() + " - "
+                                                + <string>readResponse.detail()["message"] + "\n");
+    } else {
+
+            io:println("File Succesfully added: ",readResponse);
+        
+    }
+    io:println("Add request details sent were: ", newRead.toString());
+    
+    
 }
 
 //A function to send read requests using a specified criteria
@@ -332,7 +352,9 @@ function readCriteria() {
      
     
     //Send Read Request and wait for response
-    caliBlockingClient blockingEp = new("http://localhost:9090");
+    io:println("Waiting for Server Response........");
+    
+    caliBlockingClient blockingEp = new(port);
     
     var readResponse = blockingEp->readRecord(newRead);
     if (readResponse is grpc:Error) {
@@ -345,16 +367,11 @@ function readCriteria() {
     }
     io:println("Add request details sent were: ", newRead.toString());
     
-    displayOptions();
+    
         
 }
 
-//A function that implements the send and receive functionionality of a read request
 
-function sendReadRequest(){
-    
-    
-}
 
 //A function that allows the user to pick the type of read request they want to perform
 function readRecord(){
@@ -389,7 +406,7 @@ function exit() {
 
 public function main (string... args) {
 
-    caliBlockingClient blockingEp = new("http://localhost:9090");
+    //caliBlockingClient blockingEp = new(port);
 
     // Welcome message
     io:println("*****************************************************************************");
